@@ -1,0 +1,824 @@
+---
+title: "DEseq_HTML"
+author: "Monica"
+date: "13 February 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#upstream Analysis
+Command for feature count generation
+
+# Program:featureCounts v2.0.2; Command:"featureCounts" "-T" "25" "-s" "0" "-p" "-t" "exon" --countReadPairs "-a" -M -O "/nfs/data/references/ensembl98_GRCh38/Homo_sapiens.GRCh38.98.gtf" "-o" "/localscratch//monica/aligned/featurecounts_new_flags_unstraded.txt" "/localscratch/monica/aligned/HH01_21953__quantAligned.sortedByCoord.out.bam" 
+
+## Input data and preparation
+
+The Count table
+
+ - Must be raw counts of sequencing reads
+ - Each column represents independent biological replicate
+
+We aligned 10 Tumor and 10 Normal samples. Let's read the count file into R, then convert it to a matrix. 
+
+```{r readcounts}
+setwd("Users/steffimatchado/Documents/Kolja/")
+readcounts_original<-read.table("Meta_data/Results_Esophagus/featurecounts_new_flags_unstraded_exon_countreadpairs_multiplemapping_O.txt", sep = '\t', row.names = 1, header = TRUE,check.names = FALSE)
+readcounts_1<-read.table("public/featurecounts_new_flags_unstraded_exon_countreadpairs_multiplemapping_O_study1.txt", sep = '\t', row.names = 1, header = TRUE,check.names = FALSE)
+readcounts_study_2<-read.table("public/featurecounts_new_flags_unstraded_exon_countreadpairs_multiplemapping_O_study_2.txt", sep = '\t', row.names = 1, header = TRUE,check.names = FALSE)
+readcounts_study_3<-read.table("public/featurecounts_new_flags_unstraded_exon_countreadpairs_multiplemapping_O_study3.txt", sep = '\t', row.names = 1, header = TRUE,check.names = FALSE)
+readcounts_study_4<-read.table("public/featurecounts_new_flags_unstraded_exon_countreadpairs_multiplemapping_O_study4.txt", sep = '\t', row.names = 1, header = TRUE,check.names = FALSE)
+
+#Input file contains Following Columns:
+#Chromosome number
+#Start and End position
+#Strand information
+#Length
+#For the DESEQ2 analysis, we need only Gene ID column and the expression values. 
+#remove excess columns for further downstream analysis
+
+readcounts<-readcounts_original[,-c(1:5)]
+readcounts_1<-readcounts_1[,-c(1:5)]
+readcounts_2<-readcounts_study_2[,-c(1:5)]
+readcounts_3<-readcounts_study_3[,-c(1:5)]
+readcounts_4<-readcounts_study_4[,-c(1:5)]
+readcounts_com<-cbind(readcounts,readcounts_2,readcounts_3,readcounts_4)
+
+#Remove Genes  which there are no reads, we can reduce the memory size of the dds data object and we increase the speed of the transformation and testing functions within DESeq2.
+#indremoved keeps the Gene IDs which are removed from the original dataset
+indremoved = which(apply(readcounts_com, 1, function(x) all(x == 0)) )
+readcounts_com= readcounts_com[ -indremoved, ]
+
+#Total number of Genes which are carried to the next step is 37252
+#Convert the file into matrix format for DESEQ2 analysis
+```
+
+#Subsetting the samples
+
+## Importing the metadata
+
+- Information about the samples
+- features
+- overall experiment
+
+```{r coldata}
+#library(readr)
+library(dplyr)
+coldata <- read.delim("Meta_data/Meta_data_combined.txt",sep="\t")
+head(coldata)
+
+
+#coldata$Group
+#filter function from dplyr command
+coldata<-filter(coldata,Location2=="Esophagus")
+#coldata<-filter(coldata,Group !="Study1_control")
+
+coldata<-filter(coldata,Sample_ID !="HH01_25296_25297" & Sample_ID != "HH01_25531"& Sample_ID != "HH01_25643", Sample_ID != "HH01_23182"& Sample_ID != "HH01_27306_27307" & Sample_ID != "HH01_25421_25422" & Sample_ID!= "HH02_86-32412" )
+
+coldata<-filter(coldata,Group !="Study1_control")
+
+
+readcounts<-readcounts_com%>%dplyr::select(one_of(dput(as.character(coldata$Sample_ID))))
+readcounts<-as.matrix(readcounts)
+
+
+```
+
+
+
+##Batch effcet
+
+
+```{r}
+install.packages("devtools")
+devtools::install_github("zhangyuqing/sva-devel")
+library(sva)
+
+#count_matrix <- matrix(rnbinom(400, size=10, prob=0.1), nrow=50, ncol=8)
+#sample: column, row: features
+#batch <- c(rep(1, 4), rep(2, 4))
+adjusted <- ComBat_seq(readcounts, batch=coldata$Study, group=NULL)
+
+
+
+
+
+
+```
+
+
+
+## DESeq package
+
+
+```{r, message=FALSE, echo=TRUE, warning=FALSE}
+library(DESeq2)
+library(dplyr)
+#if (!requireNamespace("BiocManager", quietly = TRUE))
+ #   install.packages("BiocManager")
+
+#BiocManager::install("DESeq2")
+
+dd_Eso_EoE_FC_GERD <- DESeqDataSetFromMatrix(countData =adjusted,colData = coldata,design = ~ Group)
+
+#normalized counts
+dd_Eso_EoE_FC_GERD <- estimateSizeFactors(dd_Eso_EoE_FC_GERD)
+#View(counts(dd_Eso))
+normalized_counts_EoE_GERD <- counts(dd_Eso_EoE_FC_GERD, normalized=TRUE)
+```
+
+
+
+
+# Sample-level QC
+
+A useful initial step in an RNA-seq analysis is often to assess overall similarity between samples:
+
+1. Which samples are similar to each other, which are different?
+2. Does this fit to the expectation from the experiment’s design?
+3. What are the major sources of variation in the dataset?
+
+
+When using these unsupervised clustering methods, log2-transformation of the normalized counts improves the distances/clustering for visualization. DESeq2 uses a regularized log transform (rlog) of the normalized counts for sample-level QC as it moderates the variance across the mean, improving the clustering.
+
+different types of transformation:
+Vst: variance stabilization transformation
+rlog: 
+
+```{r, message=FALSE, echo=TRUE, warning=FALSE}
+library(pheatmap)
+library(ggplot2)
+library(ggrepel)
+#rld_Eso_EoE_GERD_FC_group<-rlog(dd_Eso_EoE_FC_GERD, blind=TRUE)
+rld_Eso_EoE_GERD_FC_group<-vst(dd_Eso_EoE_FC_GERD, blind=TRUE)
+saveRDS(rld_Eso_EoE_GERD_FC_group,file="rld_public_vst.RDS")
+#rld_Eso_EoE_GERD_FC_group<-readRDS("rld_Eso_EoE_GERD_FC_group_original.RDS")
+pcaData <- plotPCA(rld_Eso_EoE_GERD_FC_group, intgroup=c("Group", "Timpoint_edited","CED_Nr","Timepoint","Location"), returnData=TRUE)
+percentVar <- round(100 * attr(pcaData, "percentVar"))
+#png("Kolja/PCA_plot.png", units="in", width=10, height=10, res=700)
+#pcaData<-filter(pcaData,Group != "Study1_control")
+pcaData<-filter(pcaData,Group != "functional disorders")
+pcaData<-filter(pcaData,Group != "GERD")
+
+
+ggplot(pcaData, aes(PC1, PC2, color=Group, shape=Timepoint,group=Group)) +
+  geom_point(size=5) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+  coord_fixed()+geom_text_repel(aes(label= name),max.overlaps = Inf) +theme_bw()+stat_ellipse()
+
+ggplot(pcaData, aes(PC1, PC2, color=Group, group=Group)) +
+  geom_point(size=5) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+  coord_fixed()+theme_bw()+stat_ellipse()
+
+  #geom_text(aes(label = CED_Nr),position = position_dodge(width = 2),
+                                        # vjust = -0.10, size = 5)+
+#+geom_text_repel(aes(label = ifelse(Group != 'EoE cohort', NA, name)),max.overlaps = Inf) +theme_bw()
+#dev.off()
+
+#https://github.com/hamidghaedi/RNA-seq-differential-expression#4-visualization
+
+```
+
+
+
+## UMAP
+
+```{r}
+#BiocManager::install("umap", update = FALSE)
+library(umap)
+normalized_counts <- assay(rld_Eso_EoE_GERD_FC_group) %>%
+  t() # We need to transpose this data so each row is a sample
+
+# Now perform UMAP on the normalized data
+umap_results <- umap::umap(normalized_counts)
+
+umap_plot_df <- data.frame(umap_results$layout) %>%
+  # Turn sample IDs stored as row names into a column
+  tibble::rownames_to_column("Sample_ID") %>%
+  # Add the metadata into this data frame; match by sample IDs
+  dplyr::inner_join(coldata, by = "Sample_ID")
+umap_plot_df
+
+ggplot(umap_plot_df, aes(X1, X2, color=Group, shape=Location,group=Group)) +
+geom_point(size=5) +
+xlab(paste0("X1")) +
+ylab(paste0("X2 ")) + 
+coord_fixed()+geom_text_repel(aes(label= name),max.overlaps = Inf) +theme_bw()+stat_ellipse()+facet_wrap(~CED_Nr)
+
+umap_plot_df<-filter(umap_plot_df,Group != "Study1_control")
+umap_plot_df<-filter(umap_plot_df,Group != "functional disorders")
+umap_plot_df<-filter(umap_plot_df,Group != "GERD")
+
+ggplot(umap_plot_df, aes(X1, X2, color=Group,group=Group)) +
+geom_point(size=5) +
+xlab(paste0("X1")) +
+ylab(paste0("X2 ")) + 
+coord_fixed()+theme_bw()+stat_ellipse()
+
+```
+
+
+
+## Hierachical clustering
+
+```{r}
+### Compute pairwise correlation values
+library(pheatmap)
+rld_mat <- assay(rld_Eso_EoE_GERD_FC_group) 
+rld_cor <- cor(rld_mat)    ## cor() is a base R function
+#write.table(rld_cor,file="Meta_data/pairwise_sample_matrix.tsv",sep="\t",quote=FALSE)
+#rld_cor_1<-as.matrix(read.table("Meta_data/pairwise_sample_matrix.tsv",sep="\t",header=TRUE,row.names = 1,check.names = FALSE))
+#ead(rld_cor) 
+my_sample_col <- as.data.frame(coldata_EoE_GERD_FC[,c(7,10)])
+my_sample_col$Sample_ID<-coldata_EoE_GERD_FC$Sample_ID
+rownames(my_sample_col)<-my_sample_col$Sample_ID
+colnames(my_sample_col)[1]<-"sample"
+my_sample_col$Sample_ID<-NULL
+pheatmap(rld_cor,annotation_col = my_sample_col)
+
+```
+## filtering samples (outliers based on PCA and heatmap)
+
+```{r}
+library(dplyr)
+
+coldata_EoE_GERD_FC<-filter(coldata,Sample_ID !="HH01_25296_25297" & Sample_ID != "HH01_25531"& Sample_ID != "HH01_25643", Sample_ID != "HH01_23182"& Sample_ID != "HH01_27306_27307" & Sample_ID != "HH01_25421_25422" & Sample_ID!= "HH02_86-32412" )
+readcounts_EoE_GERD_FC<-readcounts_1 %>% dplyr::select(one_of(dput(as.character(coldata_EoE_GERD_FC$Sample_ID))))
+readcounts_EoE_GERD_FC<-as.matrix(readcounts_EoE_GERD_FC)
+dd_Eso_EoE_FC_GERD <- DESeqDataSetFromMatrix(countData = readcounts_EoE_GERD_FC,
+                              colData = coldata_EoE_GERD_FC,
+                              design = ~  Group)
+#normalized counts
+dd_Eso_EoE_FC_GERD <- estimateSizeFactors(dd_Eso_EoE_FC_GERD)
+#View(counts(dd_Eso))
+
+normalized_counts_EoE_GERD <- counts(dd_Eso_EoE_FC_GERD, normalized=TRUE)
+```
+
+
+## PCA and after removing outliers
+
+```{r}
+rld_Eso_EoE_GERD_FC_group<-rlog(dd_Eso_EoE_FC_GERD, blind=TRUE)
+saveRDS(rld_Eso_EoE_GERD_FC_group,file="rld_Eso_EoE_GERD_FC_group_6_removed_samples.RDS")
+#rld_Eso_EoE_GERD_FC_group<-readRDS("rld_Eso_EoE_GERD_FC_group.RDS")
+pcaData <- plotPCA(rld_Eso_EoE_GERD_FC_group, intgroup=c("Group", "Timpoint_edited","CED_Nr","Timepoint"), returnData=TRUE)
+
+percentVar <- round(100 * attr(pcaData, "percentVar"))
+#png("Kolja/PCA_plot.png", units="in", width=10, height=10, res=700)
+ggplot(pcaData, aes(PC1, PC2, color=Group, shape=Timepoint,group=Group)) +
+  geom_point(size=5) +
+  xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+  coord_fixed()+geom_text_repel(aes(label= name),max.overlaps = Inf) +theme_bw()+stat_ellipse()
+
+
+```
+
+
+
+
+## Inference: Calling differential expression
+
+To see whether there is differential expression between conditions groups
+
+
+#
+
+
+
+## Group between GERD and functional disorders
+
+```{r, message=FALSE, echo=TRUE, warning=FALSE}
+dds_EoE_GERDn <- DESeq(dd_Eso_EoE_FC_GERD,test = "LRT", reduced = ~ 1)
+resultsNames(dds_EoE_GERDn)
+saveRDS(dds_EoE_GERDn,file="Meta_data/Deseq_object_public.rds")
+#dds_EoE_GERDn<-readRDS("Meta_data/Deseq_object_EoE_GERD.rds")
+
+contrast <- c("Group", "EoE cohort", "Study4_control")
+
+res<-results(dds_EoE_GERDn,independentFiltering = FALSE)
+res_EoE_GERD_unshrunken  <- results(dds_EoE_GERDn, contrast = contrast, alpha = 0.05)
+res_EoE_GERD_shrunken <- lfcShrink(dds_EoE_GERDn, contrast=contrast,type="ashr")
+saveRDS(res_EoE_GERD_shrunken,file="Meta_data/result_shrunken_public.rds")
+#res_EoE_GERD_shrunken<-readRDS("Meta_data/result_shrunken_Deseq_object_EoE_GERD.rds")
+
+
+
+contrast_1 <- c("Group", "EoE cohort", "Study3_control")
+res<-results(dds_EoE_GERDn,independentFiltering = FALSE)
+res_EoE_GERD_unshrunken_EoE_FD  <- results(dds_EoE_GERDn, contrast = contrast_1, alpha = 0.05)
+res_EoE_GERD_shrunken_EoE_FD <- lfcShrink(dds_EoE_GERDn, contrast=contrast_1,type="ashr")
+#saveRDS(res_EoE_GERD_shrunken_EoE_FD,file="Meta_data/result_shrunken_Deseq_object_EoE_FD_96.rds")
+#res_EoE_GERD_shrunken<-readRDS("Meta_data/result_shrunken_Deseq_object_EoE_GERD.rds")
+#plotMA(res_EoE_GERD_unshrunken, ylim=c(-2,2))
+plotMA(res_EoE_GERD_shrunken_EoE_FD, ylim=c(-2,2))
+plotMA(res, ylim=c(-2,2))
+#https://support.bioconductor.org/p/105885/
+
+#write.table(res, file="Deseq_results_latest.txt", sep="\t", quote=F, col.names=NA)
+
+```
+
+
+
+
+## Annotation: adding gene names
+
+```{r}
+
+library("AnnotationDbi")
+#BiocManager::install("org.Hs.eg.db")
+library("org.Hs.eg.db")
+columns(org.Hs.eg.db)
+
+convertIDs <- function( ids, from, to, db, ifMultiple=c("putNA", "useFirst")) {
+  stopifnot( inherits( db, "AnnotationDb" ) )
+  ifMultiple <- match.arg( ifMultiple )
+  suppressWarnings( selRes <- AnnotationDbi::select(
+    db, keys=ids, keytype=from, columns=c(from,to) ) )
+  if ( ifMultiple == "putNA" ) {
+    duplicatedIds <- selRes[ duplicated( selRes[,1] ), 1 ]
+    selRes <- selRes[ ! selRes[,1] %in% duplicatedIds, ]
+  }
+  return( selRes[ match( ids, selRes[,1] ), 2 ] )
+}
+
+res_EoE_GERD_shrunken$hgnc_symbol <- convertIDs(row.names(res_EoE_GERD_shrunken), "ENSEMBL", "SYMBOL", org.Hs.eg.db)
+
+res_EoE_GERD_shrunken$entrezgen <- convertIDs(row.names(res_EoE_GERD_shrunken), "ENSEMBL", "ENTREZID", org.Hs.eg.db)
+resOrdered_EoE_GERD <- res_EoE_GERD_shrunken[order(res_EoE_GERD_shrunken$pvalue),]
+
+
+
+
+res_EoE_GERD_shrunken_EoE_FD$hgnc_symbol <- convertIDs(row.names(res_EoE_GERD_shrunken_EoE_FD), "ENSEMBL", "SYMBOL", org.Hs.eg.db)
+
+res_EoE_GERD_shrunken_EoE_FD$entrezgen <- convertIDs(row.names(res_EoE_GERD_shrunken_EoE_FD), "ENSEMBL", "ENTREZID", org.Hs.eg.db)
+resOrdered_EoE_FD <- res_EoE_GERD_shrunken[order(res_EoE_GERD_shrunken_EoE_FD$pvalue),]
+
+```
+
+
+## Extracting significant differentially expressed genes
+
+```{r}
+### Set thresholds
+library(tibble)
+
+padj.cutoff <- 0.05
+lfc.cutoff <- 0.58 #The lfc.cutoff is set to 0.58; remember that we are working with log2 fold changes so this translates to an actual fold change of 1.5 which is pretty reasonable.
+
+#subsetting
+##between EoE vs GERD
+
+#rownames_to_column() from tibble package
+res_EoE_GERD_shrunken_1 <- res_EoE_GERD_shrunken %>%
+  data.frame() %>%
+  rownames_to_column(var="geneID") %>% 
+  as_tibble()
+
+
+##For Eoe and FD
+
+res_EoE_GERD_shrunken_EoE_FD_1 <- res_EoE_GERD_shrunken_EoE_FD %>%
+  data.frame() %>%
+  rownames_to_column(var="geneID") %>% 
+  as_tibble()
+
+
+#Keep only the significant genes using our pre-defined thresholds
+sigOE_EoE_GERD <- res_EoE_GERD_shrunken_1  %>%
+        filter(padj < padj.cutoff & abs(log2FoldChange) > lfc.cutoff)
+
+#Keep only the significant genes using our pre-defined thresholds
+sigOE_EoE_FD <- res_EoE_GERD_shrunken_EoE_FD_1  %>%
+        filter(padj < padj.cutoff & abs(log2FoldChange) > lfc.cutoff)
+
+
+write.table(sigOE_EoE_GERD,file="Meta_data/Significant_genes_EoE_study1.tsv",sep="\t")
+write.table(sigOE_EoE_FD,file="Meta_data/Significant_genes_EoE_study2.tsv",sep="\t")
+
+```
+
+
+## Plot counts for single gene
+To check the counts of reads for a single gene across the groups.
+```{r}
+library(tidyverse)
+library(RColorBrewer)
+library(tidyr)
+
+## Order results by padj values
+##drop_na from tidyr
+res_EoE_GERD_shrunken_2<-res_EoE_GERD_shrunken_1 %>% drop_na(hgnc_symbol | padj)
+
+##EOE and FD
+res_EoE_GERD_shrunken_EoE_FD_2<-res_EoE_GERD_shrunken_EoE_FD_1 %>% drop_na(hgnc_symbol | padj)
+                                                             
+                                                   
+                                                             
+top20_sigOE_genes_EoE_GERD <- res_EoE_GERD_shrunken_2%>% 
+        arrange(desc(log2FoldChange)) %>% 	#Arrange rows by padj values
+        pull(geneID) %>% 		#Extract character vector of ordered genes
+        head(n=30) 		#Extract the first 30 genes
+
+
+top20_sigOE_genes_EoE_FD<- res_EoE_GERD_shrunken_EoE_FD_2%>% 
+        arrange(desc(log2FoldChange)) %>% 	#Arrange rows by padj values
+        pull(geneID) %>% 		#Extract character vector of ordered genes
+        head(n=30) 		#Extract the first 30 genes
+
+
+
+normalized_counts_EoE_GERD_df<-as.data.frame(normalized_counts_EoE_GERD)
+library(data.table)
+normalized_counts_EoE_GERD_df<-setDT(normalized_counts_EoE_GERD_df, keep.rownames = "geneID") 
+## normalized counts for top 20 significant genes
+top20_sigOE__EoE_GERD_norm <- normalized_counts_EoE_GERD_df %>%
+        filter(geneID %in% top20_sigOE_genes_EoE_GERD )
+top20_sigOE__EoE_GERD_norm_1 <- as.data.frame(top20_sigOE__EoE_GERD_norm)
+rownames(top20_sigOE__EoE_GERD_norm_1)<-top20_sigOE__EoE_GERD_norm_1[,1]
+#top20_sigOE__EoE_GERD_norm_1<-top20_sigOE__EoE_GERD_norm_1[,-1]
+
+
+###EOE and FD
+top20_sigOE__EoE_FD_norm <- normalized_counts_EoE_GERD_df %>%
+        filter(geneID %in% top20_sigOE_genes_EoE_FD )
+top20_sigOE__EoE_FD_norm_1 <- as.data.frame(top20_sigOE__EoE_FD_norm)
+rownames(top20_sigOE__EoE_FD_norm_1)<-top20_sigOE__EoE_FD_norm_1[,1]
+#top20_sigOE__EoE_GERD_norm_1<-top20_sigOE__EoE_GERD_norm_1[,-1]
+top20_sigOE_genes_EoE_FD_GERD_norm<-rbind(top20_sigOE__EoE_FD_norm_1,top20_sigOE__EoE_GERD_norm_1)
+top20_sigOE_genes_EoE_FD_GERD_norm<-distinct(top20_sigOE_genes_EoE_FD_GERD_norm, geneID, .keep_all = TRUE)
+
+melted_norm_counts_EoE_GERD <-data.frame(melt(top20_sigOE_genes_EoE_FD_GERD_norm))
+colnames(melted_norm_counts_EoE_GERD) <- c("geneID", "Sample_ID", "normalized_counts")
+df3 <- full_join(melted_norm_counts_EoE_GERD, coldata_EoE_GERD_FC[,c(1,10)])
+df3<-left_join(df3, res_EoE_GERD_shrunken_2[,c(1,3,7)])
+
+IL_genes<-filter(res_EoE_GERD_shrunken_1,hgnc_symbol=="IL4"|hgnc_symbol=="IL5"|hgnc_symbol=="IL13"|hgnc_symbol=="CCL26"| hgnc_symbol=="CXCL1" )
+write.table(IL_genes,file="Meta_data/IL_genes_EoE_GERD.tsv",sep="\t",quote = FALSE)
+IL_genes<-IL_genes$geneID
+IL_genes_sigOE__EoE_GERD_norm<- normalized_counts_EoE_GERD_df %>%
+        filter(geneID %in% IL_genes)
+IL_genes_sigOE__EoE_GERD_norm_1 <- as.data.frame(IL_genes_sigOE__EoE_GERD_norm)
+rownames(IL_genes_sigOE__EoE_GERD_norm_1)<-IL_genes_sigOE__EoE_GERD_norm_1[,1]
+
+melted_IL_genes_norm_counts_EoE_GERD <-data.frame(melt(IL_genes_sigOE__EoE_GERD_norm_1))
+colnames(melted_IL_genes_norm_counts_EoE_GERD) <- c("geneID", "Sample_ID", "normalized_counts")
+df3_IL <- full_join(melted_IL_genes_norm_counts_EoE_GERD, coldata_EoE_GERD_FC[,c(1,10)])
+df3_IL<-left_join(df3_IL, res_EoE_GERD_shrunken_1[,c(1,3,7)])
+ggplot(df3_IL, aes(x = as.factor(hgnc_symbol), y = normalized_counts)) +
+  scale_y_log10() +
+geom_boxplot(aes(fill = Group), position = position_dodge(0.9)) +
+scale_fill_manual(values = c("#09E359", "#E31009","pink")) + 
+theme_bw() + xlab("Gene Symbol")+
+theme(axis.text.x = element_text(angle = 45, hjust=1))
+
+
+#melting dataset for visualization
+
+ggplot(df3, aes(x = as.factor(hgnc_symbol), y = normalized_counts)) +
+  scale_y_log10() +
+geom_boxplot(aes(fill = Group), position = position_dodge(0.9)) +
+scale_fill_manual(values = c("#09E359", "#E31009","pink")) + 
+theme_bw() + xlab("Gene Symbol")+ylab("Normalized Count (log10)")+
+theme(axis.text.x = element_text(angle = 45, hjust=1))
+
+
+# write.table to import in python
+write.table(IL_genes, file = "Meta_data/IL_genes_EoE_GERD.tsv", sep = "\t", quote = FALSE)
+
+
+```
+
+
+
+## Plot counts downreulating genes
+To check the counts of reads for a single gene across the groups.
+```{r}
+library(tidyverse)
+library(RColorBrewer)
+library(tidyr)
+
+## Order results by padj values
+##drop_na from tidyr
+res_EoE_GERD_shrunken_2<-res_EoE_GERD_shrunken_1 %>% drop_na(hgnc_symbol | padj)
+
+##EOE and FD
+res_EoE_GERD_shrunken_EoE_FD_2<-res_EoE_GERD_shrunken_EoE_FD_1 %>% drop_na(hgnc_symbol | padj)
+                                                             
+                                                   
+                                                             
+top20_sigOE_genes_EoE_GERD_down <- res_EoE_GERD_shrunken_2%>% 
+        arrange(log2FoldChange)%>% 	#Arrange rows by padj values
+        pull(geneID) %>% 		#Extract character vector of ordered genes
+        head(n=30) 		#Extract the first 30 genes
+
+
+top20_sigOE_genes_EoE_FD_down<- res_EoE_GERD_shrunken_EoE_FD_2%>% 
+        arrange(log2FoldChange) %>% 	#Arrange rows by padj values
+        pull(geneID) %>% 		#Extract character vector of ordered genes
+        head(n=30) 		#Extract the first 30 genes
+
+
+
+normalized_counts_EoE_GERD_df<-as.data.frame(normalized_counts_EoE_GERD)
+library(data.table)
+normalized_counts_EoE_GERD_df<-setDT(normalized_counts_EoE_GERD_df, keep.rownames = "geneID") 
+## normalized counts for top 20 significant genes
+top20_sigOE__EoE_GERD_down_norm <- normalized_counts_EoE_GERD_df %>%
+        filter(geneID %in% top20_sigOE_genes_EoE_GERD_down )
+top20_sigOE__EoE_GERD_down_norm_1 <- as.data.frame(top20_sigOE__EoE_GERD_down_norm)
+rownames(top20_sigOE__EoE_GERD_down_norm_1)<-top20_sigOE__EoE_GERD_down_norm_1[,1]
+#top20_sigOE__EoE_GERD_norm_1<-top20_sigOE__EoE_GERD_norm_1[,-1]
+
+
+###EOE and FD
+top20_sigOE__EoE_FD_down_norm <- normalized_counts_EoE_GERD_df %>%
+        filter(geneID %in% top20_sigOE_genes_EoE_FD_down )
+top20_sigOE__EoE_FD_down_norm_1 <- as.data.frame(top20_sigOE__EoE_FD_down_norm)
+rownames(top20_sigOE__EoE_FD_down_norm_1)<-top20_sigOE__EoE_FD_down_norm_1[,1]
+#top20_sigOE__EoE_GERD_norm_1<-top20_sigOE__EoE_GERD_norm_1[,-1]
+top20_sigOE_genes_EoE_FD_GERD_down_norm<-rbind(top20_sigOE__EoE_FD_down_norm_1,top20_sigOE__EoE_GERD_down_norm_1)
+top20_sigOE_genes_EoE_FD_GERD_down_norm<-distinct(top20_sigOE_genes_EoE_FD_GERD_down_norm, geneID, .keep_all = TRUE)
+
+melted_norm_counts_EoE_GERD_down <-data.frame(melt(top20_sigOE_genes_EoE_FD_GERD_down_norm))
+colnames(melted_norm_counts_EoE_GERD_down) <- c("geneID", "Sample_ID", "normalized_counts")
+df3_down <- full_join(melted_norm_counts_EoE_GERD_down, coldata_EoE_GERD_FC[,c(1,10)])
+df3_down<-left_join(df3_down, res_EoE_GERD_shrunken_2[,c(1,3,7)])
+
+
+#melting dataset for visualization
+
+ggplot(df3_down, aes(x = as.factor(hgnc_symbol), y = normalized_counts)) +
+  scale_y_log10() +
+geom_boxplot(aes(fill = Group), position = position_dodge(0.9)) +
+scale_fill_manual(values = c("#09E359", "#E31009","pink")) + 
+theme_bw() + xlab("Gene Symbol")+ylab("Normalized Count (log10)")+
+theme(axis.text.x = element_text(angle = 45, hjust=1))
+
+
+
+
+
+IL_genes<-filter(res_EoE_GERD_shrunken_1,hgnc_symbol=="IL4"|hgnc_symbol=="IL5"|hgnc_symbol=="IL13"|hgnc_symbol=="CCL26"| hgnc_symbol=="CXCL1" )
+write.table(IL_genes,file="Meta_data/IL_genes_EoE_GERD.tsv",sep="\t",quote = FALSE)
+IL_genes<-IL_genes$geneID
+IL_genes_sigOE__EoE_GERD_norm<- normalized_counts_EoE_GERD_df %>%
+        filter(geneID %in% IL_genes)
+IL_genes_sigOE__EoE_GERD_norm_1 <- as.data.frame(IL_genes_sigOE__EoE_GERD_norm)
+rownames(IL_genes_sigOE__EoE_GERD_norm_1)<-IL_genes_sigOE__EoE_GERD_norm_1[,1]
+
+
+
+
+IL_genes_EOE_FD<-filter(res_EoE_GERD_shrunken_EoE_FD_1,hgnc_symbol=="IL4"|hgnc_symbol=="IL5"|hgnc_symbol=="IL13"|hgnc_symbol=="CCL26"| hgnc_symbol=="CXCL1" )
+write.table(IL_genes_EOE_FD,file="Meta_data/IL_genes_EoE_FD.tsv",sep="\t",quote = FALSE)
+IL_genes_EOE_FD<-IL_genes_EOE_FD$geneID
+IL_genes_sigOE_EoE_FD_norm<- normalized_counts_EoE_GERD_df %>%
+        filter(geneID %in% IL_genes_EOE_FD)
+IL_genes_sigOE_EoE_FD_norm_1<- as.data.frame(IL_genes_sigOE_EoE_FD_norm)
+rownames(IL_genes_sigOE_EoE_FD_norm_1)<-IL_genes_sigOE_EoE_FD_norm_1[,1]
+
+IL_genes_sigOE_EoE_GERD_FD_norm<-rbind(IL_genes_sigOE_EoE_FD_norm_1,IL_genes_sigOE__EoE_GERD_norm_1)
+IL_genes_sigOE_EoE_GERD_FD_norm<-distinct(IL_genes_sigOE_EoE_GERD_FD_norm, geneID, .keep_all = TRUE)
+
+melted_IL_genes_norm_counts_EoE_GERD <-data.frame(melt(IL_genes_sigOE_EoE_GERD_FD_norm))
+colnames(melted_IL_genes_norm_counts_EoE_GERD) <- c("geneID", "Sample_ID", "normalized_counts")
+df3_IL <- full_join(melted_IL_genes_norm_counts_EoE_GERD, coldata_EoE_GERD_FC[,c(1,10)])
+df3_IL<-left_join(df3_IL, res_EoE_GERD_shrunken_1[,c(1,3,7)])
+ggplot(df3_IL, aes(x = as.factor(hgnc_symbol), y = normalized_counts)) +
+  scale_y_log10() +
+geom_boxplot(aes(fill = Group), position = position_dodge(0.9)) +
+scale_fill_manual(values = c("#09E359", "#E31009","pink")) + 
+theme_bw() + xlab("Gene Symbol")+
+theme(axis.text.x = element_text(angle = 45, hjust=1))
+
+
+
+# write.table to import in python
+write.table(IL_genes, file = "Meta_data/IL_genes_EoE_GERD.tsv", sep = "\t", quote = FALSE)
+
+
+```
+# Gathering the columns to have normalized counts to a single column
+gathered_top20_sigOE <- top20_sigOE_norm %>%
+  gather(colnames(top20_sigOE_norm)[2:ncol(top20_sigOE_norm)], key = "samplename", value = "normalized_counts")
+
+## check the column header in the "gathered" data frame
+View(gathered_top20_sigOE)
+
+## Heatmap
+
+```{r}
+
+heat_colors <- brewer.pal(6, "YlOrRd")
+
+pheatmap(normalized_counts_EoE_GERD, 
+         cluster_rows = T, 
+         show_rownames = F,
+         annotation = my_sample_col,  
+         border_color = NA, 
+         fontsize = 10, 
+         scale = "row", 
+         fontsize_row = 10, 
+         height = 20)
+
+```
+
+```{r}
+###how to plot using ggplot
+#f<-plotCounts(dds, gene=which.min(res$padj), intgroup="Timepoint", returnData = TRUE)
+#res_GERD_fun_shrunken_1<-na.omit(res_GERD_fun_shrunken)
+#omit rows with NA
+library()
+SigOE_filter<-na.omit(sigOE_EoE_GERD)
+
+
+f<-plotCounts(dds_EoE_GERDn, gene="ENSG00000089157", intgroup=c("Group","Timpoint_edited"),returnData=TRUE) 
+#ENSG00000111640: GAPDH
+#ENSG00000073578 : SDHA
+#ENSG00000075624 : Actin
+#ENSG00000089157 : RPLP0 
+f
+ggplot(f, aes(x = Group, y = count,color=Group)) + 
+  geom_point(position=position_jitter(w = 0.1,h = 0)) +
+  geom_text_repel(aes(label = rownames(f))) + 
+  theme_bw() +
+  ggtitle("SDHA: Succinate Dehydrogenase Complex Flavoprotein Subunit A ")+theme_bw()
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+```
+
+
+
+
+
+## Normalization
+
+The main factors often considered during normalization are:
+
+1. Sequencing depth
+Accounting for sequencing depth is necessary for comparison of gene expression between samples. Eg: sample 1 may have double the sequencing depth that of sample 2
+
+2. Gene length
+
+Accounting for gene length is necessary for comparing expression between different genes within the same sample. 
+Eg: Gene X and Gene Y have similar levels of expression, but the number of reads mapped to Gene X would be many more than the number mapped to Gene Y because Gene X is longer
+
+3. RNA composition
+
+A few highly differentially expressed genes between samples, differences in the number of genes expressed between samples, or presence of contamination can skew some types of normalization methods. Accounting for RNA composition is recommended for accurate comparison of expression between samples, and is particularly important when performing differential expression analyses 
+
+To perform the median of ratios method of normalization, DESeq2 has a single estimateSizeFactors() function that will generate size factors for us. We will use the function in the example below, but in a typical RNA-seq analysis this step is automatically performed by the DESeq() function, which we will see later.
+
+
+By assigning the results back to the dds object we are filling in the slots of the DESeqDataSet object with the appropriate information. We can take a look at the normalization factor applied to each sample using  sizeFactors(dd)
+
+
+- Library size --> size factor
+
+```{r, message=FALSE, echo=TRUE}
+
+
+```
+
+## Normalize Counts
+Now, to retrieve the normalized counts matrix from dds, we use the counts() function and add the argument normalized=TRUE.
+```{r, message=FALSE, echo=TRUE}
+write.table(normalized_counts_EoE_GERD, file="Meta_data/normalized_counts_EoE_GERD.tsv", sep="\t", quote=F)
+
+```
+
+NOTE: DESeq2 doesn’t actually use normalized counts, rather it uses the raw counts and models the normalization inside the Generalized Linear Model (GLM). These normalized counts will be useful for downstream visualization of results, but cannot be used as input to DESeq2 or any other tools that peform differential expression analysis which use the negative binomial model.
+
+
+
+## Gene Dispersion
+
+# What is dispersion?
+
+Dispersion is a measure of spread or variability in the data. Variance, standard deviation, IQR, among other measures, can all be used to measure dispersion. However, DESeq2 uses a specific measure of dispersion (α) related to the mean (μ) and variance of the data: Var = μ + α*μ^2. For genes with moderate to high count values, the square root of dispersion will be equal to the coefficient of variation (Var / μ). So 0.01 dispersion means 10% variation around the mean expected across biological replicates.
+
+- To eliminate the read count bias
+- A risk in differential expression analysis is that low count values often show extreme log fold changes -> DEseq2 counters this by shrinking LFC values
+- How does DEseq2 knows how much to shrink? It considers the dispersion, i.e. standard deviation for sufficiently large expressed genes and noise otherwise.
+
+#https://hbctraining.github.io/DGE_workshop/lessons/04_DGE_DESeq2_analysis.html
+
+
+```{r, message=FALSE, echo=TRUE, warning=FALSE}
+dd<-estimateDispersions(dd)
+plotDispEsts(dd)
+```
+
+
+## Independent Filtering
+
+The MA plot highlights an important property of RNA-Seq data. For weakly expressed genes, we have no chance of seeing differential expression, because the low read counts suffer from so high Poisson noise that any biological effect is drowned in the uncertainties from the read counting. We can also show this by examining the ratio of small p values (say, less than, 0.01) for genes binned by mean normalized count:
+
+```{r}
+qs <- c(0, quantile(res$baseMean[res$baseMean > 0], 0:7/7))
+# cut the genes into the bins
+bins <- cut(res$baseMean, qs)
+# rename the levels of the bins using the middle point
+levels(bins) <- paste0("~",round(.5*qs[-1] + .5*qs[-length(qs)]))
+# calculate the ratio of $p$ values less than .01 for each bin
+ratios <- tapply(res$pvalue, bins, function(p) mean(p < .01, na.rm=TRUE))
+# plot these ratios
+barplot(ratios, xlab="mean normalized count", ylab="ratio of small p values")
+
+```
+
+
+## MA Plot
+
+```{r message=FALSE, echo=TRUE, warning=FALSE}
+plotMA(res, ylim=c(-2,2))
+plotDispEsts(dds, ylim = c(1e-6, 1e1) )
+```
+
+Questions: 
+- What does M and A stand for?
+M: difference between log intensities
+A: is the average log intensity for a dot in the plot.
+- What can you say about the relationship of mean count and log fold change? 
+The MA-plot represents each gene with a dot. The x axis is the average expression over all samples, the y axis the log2 fold change of normalized counts (i.e the average of counts normalized by size factor) between treatment and control. Genes with an adjusted p value below a threshold (here 0.1, the default) are shown in blue.
+
+
+## Volcano plot
+
+```{r}
+library(EnhancedVolcano)
+EnhancedVolcano(res, lab = rownames(res), x = 'log2FoldChange',  y = 'pvalue', xlim = c(-5, 8), ylim=c(0,5), pCutoff = 0.001)
+```
+
+Bonus task: recreate this as a box plot with ggplot2
+
+## Significant genes
+To find the significant genes, according to some chosen threshold for the false discovery rate (GERDR) as well as p-value
+
+```{r, message=FALSE, echo=TRUE, warning=FALSE}
+resSig <- subset(res, padj < 0.1)
+resSig_p <- subset(res, pvalue < 0.05)
+resSig_p
+head( resSig_p[ order(resSig$pvalue), ] )
+```
+## Genes which are downregulated in Followup
+```{r}
+head( resSig_p[order( resSig_p$log2FoldChange, -resSig_p$baseMean), ] )
+```
+
+
+## Upregulated genes
+```{r, message=FALSE, echo=TRUE, warning=FALSE}
+head( resSig_p[ order( -resSig$log2FoldChange, -resSig$baseMean ), ] )
+```
+
+## Multiple factor analysis
+
+```{r, message=FALSE, echo=TRUE, warning=FALSE}
+dd_multi <- DESeqDataSetFromMatrix(countData = readcounts,
+                              colData = coldata,
+                             design = ~Timepoint+Location)
+dd_multi$group <- factor(paste0(dd_multi$Timepoint, dd_multi$Location))
+design(dd_multi) <- ~ group
+dd_multi <- DESeq(dd_multi)
+resultsNames(dd_multi)
+Illeum_followup_diagnosis<-results(dd_multi, contrast=c("group", "followupIleum", "diagnosisIleum"))
+Sigma_followup_diagnosis<-results(dd_multi, contrast=c("group", "followupIleum", "diagnosisIleum"))
+```
+
+## Heatmap of the count table
+
+Visualization of differentially expressed genes using heatmap function
+
+
+## Corrplot
+
+This plot will help to get an overview of the correlation across all samples. he corrplot package provides with a convenient plotting function to help us visualise correlation matrix. Correlation of gene expression between every pair of samples is needed for the corrplot. cor() function is used for with the normalized gene counts:
+```{r, message=FALSE, echo=TRUE, warning=FALSE}
+library(corrplot)
+library(dplyr)
+N_counts<-counts(dds, normalized=TRUE )
+Corr <- N_counts %>% 
+    cor(method = "spearman")
+
+corrplot(Corr, 
+         method = "circle", cl.lim = c(0.8, 1), is.corr = FALSE)
+```
+
+
+```
+
+## Exporting results to CSV files
+```{r, message=FALSE, echo=TRUE, warning=FALSE}
+write.csv(resSig_p, file="condition_treated_results.csv")
+```
+
