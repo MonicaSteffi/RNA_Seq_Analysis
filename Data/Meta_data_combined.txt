@@ -1,0 +1,133 @@
+Sample_ID	Type	CED_Nr	Date	Location	Location2	Timepoint	Timpoint_edited	Order	Group	endoscopy (EREFS sum)	histology (Eos/hpf)	activity (>15 Eos/hpf)	current therapy	Drug	Drug_1	Study
+HH01_21953	Total RNA	CED020	5/17/19	Ileum	Intestine	followup	followup	First	INFEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_21968	Total RNA	CED020	5/17/19	Sigma	Intestine	followup	followup	First	INFEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_21983	Total RNA	CED020	7/15/20	Ileum	Intestine	followup	followup	Second	INFEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_21998	Total RNA	CED020	7/15/20	Sigma	Intestine	followup	followup	Second	INFEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_22014	Total RNA	CED008	1/30/19	Ileum	Intestine	diagnosis	diagnosis	First	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_22029	Total RNA	CED008	1/30/19	Sigma	Intestine	diagnosis	diagnosis	First	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_22059	Total RNA	CED008	11/20/19	Sigma	Intestine	followup	followup	Second	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_22074	Total RNA	CED017	9/6/19	Ileum	Intestine	followup	followup	First	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_22090	Total RNA	CED017	9/6/19	Sigma	Intestine	followup	followup	First	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_22106	Total RNA	CED017	9/3/20	Ileum	Intestine	followup	followup	Second	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_22710	Total RNA	CED023	6/14/19	Ileum	Intestine	followup	followup	First	UCothers	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_24245	Total RNA	CED023	6/14/19	SigmaTransversum	Intestine	followup	followup	First	UCothers	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_24292	Total RNA	CED023	7/24/20	Sigma	Intestine	followup	followup	Second	UCothers	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_24864	Total RNA	CED028	8/5/19	Ileum	Intestine	diagnosis	diagnosis	First	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_24880	Total RNA	CED028	8/5/19	Sigma	Intestine	diagnosis	diagnosis	First	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_24896_24895	Total RNA	CED028	5/8/20	Ileum	Intestine	followup	followup	Second	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_24912	Total RNA	CED028	5/8/20	Sigma	Intestine	followup	followup	Second	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_24929_24930	Total RNA	CED046	4/22/20	Ileum	Intestine	diagnosis	diagnosis	First	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_24945	Total RNA	CED046	4/22/20	Sigma	Intestine	diagnosis	diagnosis	First	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_24961	Total RNA	CED046	11/5/20	Ileum	Intestine	followup	followup	Second	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_24977	Total RNA	CED046	11/5/20	Sigma	Intestine	followup	followup	Second	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_24999	Total RNA	CED024	12/6/19	Ileum	Intestine	followup	followup	Second	CDEENothers	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_25013	Total RNA	CED024	12/6/19	Sigma	Intestine	followup	followup	Second	CDEENothers	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_25027	Total RNA	CED024	7/8/19	Ileum	Intestine	diagnosis	diagnosis	First	CDEENothers	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_25041	Total RNA	CED024	7/8/19	Sigma	Intestine	diagnosis	diagnosis	First	CDEENothers	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_26182	Total RNA	CED031	8/30/19	Ileum	Intestine	followup	followup	First	UCothers	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_26198	Total RNA	CED031	8/30/19	Sigma	Intestine	followup	followup	First	UCothers	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_26214	Total RNA	CED031	1/22/20	Sigma	Intestine	followup	followup	Second	UCothers	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_26230	Total RNA	CED031	9/24/20	Sigma	Intestine	followup	followup	Second	UCothers	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_26393	Total RNA	CED041	3/2/20	Ileum	Intestine	diagnosis	diagnosis	First	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_26409	Total RNA	CED041	3/2/20	Sigma	Intestine	diagnosis	diagnosis	First	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_26432	Total RNA	CED038	3/30/20	Sigma	Intestine	followup	followup	First	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_26448	Total RNA	CED038	1/25/21	Ileum	Intestine	followup	followup	Second	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_26464	Total RNA	CED038	1/25/21	Sigma	Intestine	followup	followup	Second	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_26611	Total RNA	CED041	2/10/21	Ileum	Intestine	followup	followup	Second	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_26627	Total RNA	CED041	2/10/21	Sigma	Intestine	followup	followup	Second	CDEEN	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_26920	Total RNA	CED048	5/14/20	Ileum	Intestine	followup	followup	First	UCothers	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_26936	Total RNA	CED048	5/14/20	Sigma	Intestine	followup	followup	First	UCothers	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_26952	Total RNA	CED048	1/13/21	Ileum	Intestine	followup	followup	Second	UCothers	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_26968	Total RNA	CED048	1/13/21	Sigma	Intestine	followup	followup	Second	UCothers	NA	NA	NA	NA	NA	NA	Inhouse
+HH01_22730-22731	Total RNA	EoE_001	4/3/20	distal	Esophagus	diagnosis	diagnosis	NA	functional disorders	NA	0	NA	Movicol	Other	Other	Inhouse
+HH01_22749-22750	Total RNA	EoE_007	4/24/20	distal	Esophagus	diagnosis	diagnosis	NA	functional disorders	NA	0	NA	(PPI until 1 week prior to endoscopy)	PPI	PPI	Inhouse
+HH01_22765-22766	Total RNA	EoE_009	4/22/20	distal	Esophagus	diagnosis	diagnosis	NA	functional disorders	NA	0	NA	/	No	No	Inhouse
+HH01_22782-22783	Total RNA	EoE_011	4/29/20	distal	Esophagus	diagnosis	diagnosis	NA	functional disorders	NA	0	NA	Buscopan if required	Other	Other	Inhouse
+HH01_23056-23057	Total RNA	EoE_014	5/6/20	distal	Esophagus	diagnosis	diagnosis	NA	functional disorders	NA	0	NA	/	No	No	Inhouse
+HH01_23090	Total RNA	EoE_017	5/22/20	distal	Esophagus	diagnosis	diagnosis	NA	functional disorders	NA	0	NA	/	No	No	Inhouse
+HH01_23120-23121	Total RNA	EoE_018	5/22/20	distal	Esophagus	diagnosis	diagnosis	NA	functional disorders	NA	0	NA	/	No	No	Inhouse
+HH01_23155-23156	Total RNA	EoE_021	5/28/20	distal	Esophagus	diagnosis	diagnosis	NA	functional disorders	NA	0	NA	Vit. D 1x500 I.E./d p.o.	Other	Other	Inhouse
+HH01_23182	Total RNA	EoE_025	6/5/20	distal	Esophagus	diagnosis	diagnosis	NA	functional disorders	NA	0	NA	/	No	No	Inhouse
+HH01_23209	Total RNA	EoE_042	8/18/20	distal	Esophagus	diagnosis	diagnosis	NA	functional disorders	NA	0	NA	/	No	No	Inhouse
+HH01_23237-23238	Total RNA	EoE_033	6/29/20	distal	Esophagus	diagnosis	diagnosis	NA	functional disorders	NA	0	NA	/	No	No	Inhouse
+HH01_24024-24025	Total RNA	EoE_002	4/8/20	distal	Esophagus	diagnosis	diagnosis	NA	GERD	NA	0	NA	(PPI until 2 weeks prior to endoscopy), NaCl 0,9% 5 ml morgens, Cefalexin 1000 mg, Kreon 10.000 I.E., Vitamin D 1000 I.E., Vitamin E 200 mg   1x tgl., Vitamin A 10.000 I.E.   1x tgl.	PPI	PPI	Inhouse
+HH01_24064	Total RNA	EoE_003	4/15/20	distal	Esophagus	diagnosis	diagnosis	NA	GERD	NA	0	NA	/	No	No	Inhouse
+HH01_24090	Total RNA	EoE_005	4/20/20	distal	Esophagus	diagnosis	diagnosis	NA	GERD	NA	0	NA	/	No	No	Inhouse
+HH01_24115	Total RNA	EoE_015	5/14/20	distal	Esophagus	diagnosis	diagnosis	NA	GERD	NA	0	NA	PPI (2x10 mg), Gabapentin(2x200 mg), Movicol if required	PPI	PPI	Inhouse
+HH01_24305	Total RNA	EoE_030	6/19/20	distal	Esophagus	diagnosis	diagnosis	NA	GERD	NA	0	NA	Evaluna 20 (Levonorgestrel, Ethinylestradiol)	Other	Other	Inhouse
+HH01_24329	Total RNA	EoE_041	8/14/20	distal	Esophagus	diagnosis	diagnosis	NA	GERD	NA	0	NA	(PPI until 1 week prior to endoscopy), Risperidon (2x1mg); Vitamin A (Vitadral) 5 gtt, Vitamin D 1000 I.E. = 2 gtt	PPI	PPI	Inhouse
+HH01_24512-24513	Total RNA	EoE_061	11/13/20	distal	Esophagus	diagnosis	diagnosis	NA	GERD	NA	0	NA	Sultiam (3x25 mg)	Other	Other	Inhouse
+HH01_24577-24578	Total RNA	EoE_062	11/16/20	distal	Esophagus	diagnosis	diagnosis	NA	GERD	NA	0	NA	Vit. D (1x1000 IE); Novalgin, Paracetamol 500 mg, Gabapentin if required	Other	Other	Inhouse
+HH01_24620	Total RNA	EoE_066	11/30/20	distal	Esophagus	diagnosis	diagnosis	NA	GERD	NA	0	NA	PPI	PPI	PPI	Inhouse
+HH01_25080	Total RNA	EoE_067	12/3/20	distal	Esophagus	follow up	follow up	NA	GERD	NA	0	NA	PPI (1x40 mg)	PPI	PPI	Inhouse
+HH01_25106	Total RNA	EoE_073	1/13/21	distal	Esophagus	follow up	follow up	NA	GERD	NA	0	NA	PPI (40-0-20mg)	PPI	PPI	Inhouse
+HH01_25132	Total RNA	EoE_080	2/4/21	distal	Esophagus	diagnosis	diagnosis	NA	GERD	NA	0	NA	/ (nothing GI-specific)	No	No	Inhouse
+HH01_25296-25297	Total RNA	EoE_004	4/16/20	distal	Esophagus	follow up 1	follow up	NA	EoE cohort	1	0	remission	PPI (2x40 mg)	PPI	PPI	Inhouse
+HH01_25279-25280	Total RNA	EoE_004	12/18/20	distal	Esophagus	follow up 2	follow up	NA	EoE cohort	2	0	remission	PPI (2x20mg)	PPI	PPI	Inhouse
+HH01_25286	Total RNA	EoE_008	6/3/20	distal	Esophagus	follow up 1	follow up	NA	EoE cohort	2	19	active	PPI (2x40 mg, unregelmäßig), elimination diet (egg, nuts, soy)	PPI	PPI	Inhouse
+HH01_25266-25267	Total RNA	EoE_008	9/24/20	distal	Esophagus	follow up 2	follow up	NA	EoE cohort	2	1	remission	PPI (2x40 mg, unregelmäßig), elimination diet (egg, nuts, soy)	PPI	PPI	Inhouse
+HH01_25397	Total RNA	EoE_029	7/10/20	distal	Esophagus	diagnosis	diagnosis	NA	EoE cohort	6	44	active	/	No	No	Inhouse
+HH01_25408	Total RNA	EoE_029	10/9/20	proximal	Esophagus	follow up 1	follow up	NA	EoE cohort	5	30	active	PPI (2x40 mg)	PPI	PPI	Inhouse
+HH01_25421-25422	Total RNA	EoE_029	12/16/20	distal	Esophagus	follow up 2	follow up	NA	EoE cohort	5	0	remission	elimination diet (egg, cow's milk)	Other	ED	Inhouse
+HH01_27306-27307	Total RNA	EoE_029	3/5/21	distal	Esophagus	follow up 3	follow up	NA	EoE cohort	3	0	active	elimination diet (cow's milk)	Other	ED	Inhouse
+HH01_25431	Total RNA	EoE_037	7/27/20	distal	Esophagus	diagnosis	diagnosis	NA	EoE cohort	1	18	active	/	No	No	Inhouse
+HH01_25507	Total RNA	EoE_037	10/23/20	distal	Esophagus	follow up 1	follow up	NA	EoE cohort	2	21	active	PPI (2x20mg)	PPI	PPI	Inhouse
+HH01_25590	Total RNA	EoE_037	1/11/21	distal	Esophagus	follow up 2	follow up	NA	EoE cohort	3	25	active	PPI (2x20mg), elimination diet (egg, cow's milk)	PPI	PPI	Inhouse
+HH01_25531	Total RNA	EoE_048	8/31/20	distal	Esophagus	diagnosis	diagnosis	NA	EoE cohort	3	0 (other parts of eso. 30)	active	Movicol	Other	Other	Inhouse
+HH01_25555	Total RNA	EoE_048	11/4/20	distal	Esophagus	follow up 1	follow up	NA	EoE cohort	4	7 (other parts of eso. 50)	active	PPI (2x40 mg)	PPI	PPI	Inhouse
+HH01_25619	Total RNA	EoE_048	1/22/21	distal	Esophagus	follow up 2	follow up	NA	EoE cohort	4	4 (other parts of eso. 52)	active	elimination diet (egg, cow's milk)	Other	ED	Inhouse
+HH01_25643	Total RNA	EoE_043	8/19/20	distal	Esophagus	follow up 1	follow up	NA	EoE cohort	3	13	active	elimination diet (egg, cow's milk, nuts)	Other	ED	Inhouse
+HH01_25608	Total RNA	EoE_043	2/8/21	distal	Esophagus	follow up 2	follow up	NA	EoE cohort	3	52	remission	PPI (10mg/d), elimination diet (egg, cow's milk, nuts)	PPI	PPI	Inhouse
+HH02_85-32402	Total RNA	EoE_037	3/31/21	distal	Esophagus	follow up 3	follow up		EoE cohort	4	28 (other parts of eso 39)	active	6-food-elimination diet, Omeprazol 2 x 10 mg	Other	ED	Inhouse_2
+HH02_86-32412	Total RNA	EoE_043	4/26/21	distal	Esophagus	follow up 5	follow up		EoE cohort	4	>20	active	Elimination von Milch/Ei/Nüsse/Gluten	Other	ED	Inhouse_2
+HH02_87-32422	Total RNA	EoE_048	3/29/21	distal	Esophagus	follow up 3	follow up		EoE cohort	4	42	active	6-food-elimination diet	Other	ED	Inhouse_2
+HH02_88-32434	Total RNA	EoE_035	7/1/20	proximal	Esophagus	follow up 2	follow up		EoE cohort	1	0	remission	Omeprazol 40 – 0 – 40 mg, Vitamin D 1000 – 0 – 0 IE/d, Methotrexat 20 mg s.c. 1x/Woche (samstags), Folsäure 5 mg 1x/Woche (sonntags, 24 h nach MTX), Adalimumab 40 mg s. c. alle 2 Wochen (sonntags), Salmeterol/Fluticason 25/125 ug 1 – 0 – 1 Hübe tgl., NaCl0,9% 2x täglich i.p., L-Thyroxin 75 – 0 – 0 μg	Other	Other	Inhouse_2
+HH02_89-32444	Total RNA	EoE_035	4/22/21	distal	Esophagus	follow up 3	follow up		EoE cohort	0	0	remission	PPI seit zwei Monaten abgesetzt	PPI	PPI	Inhouse_2
+HH02_90-32456	Total RNA	EoE_063	11/17/20	distal	Esophagus	follow up 2	follow up		EoE cohort	1	3	remission	1mg/kg Omeprazol 2x/Tag	Other	Other	Inhouse_2
+HH02_91-32466	Total RNA	EoE_063	3/8/21	distal	Esophagus	follow up 3	follow up		EoE cohort	0	3	remission	Omeprazol 10 mg/Tag	Other	Other	Inhouse_2
+HH02_92-32478	Total RNA	EoE_069	12/11/20	distal	Esophagus	follow up 3	follow up		EoE cohort	4	65	active	Omeprazol 30-0-30 mg täglich und kuhmilchfreie Diät	Other	Other	Inhouse_2
+HH02_93-32488	Total RNA	EoE_069	4/23/21	distal	Esophagus	follow up 4	follow up		EoE cohort	2	0	remission	Omeprazol 20-0-30; seit 01/2021 Budesonid 2x1mg p.o., kuhmilchfreie Diät;  Dauermedikation (Infectocillin, Jodid, L-Thyroxin, Moronal, Mucoclear, Salbutamol)	Other	Other	Inhouse_2
+HH02_94-32498	Total RNA	EoE_077	2/1/21	distal	Esophagus	diagnosis	follow up		EoE cohort	5	28	active	V.a. vWF-Mangel, deshalb prä-OP Cyclocapron & Minirin (Cyklokapron 500 mg 1-1-1 p.o.)	Other	Other	Inhouse_2
+HH02_95-32508	Total RNA	EoE_077	4/14/21	proximal	Esophagus	follow up 1	follow up		EoE cohort	2	0	remission	Omeprazol 40-0-20 mg p.o.	Other	Other	Inhouse_2
+HH02_96-32518	Total RNA	EoE_078	2/3/21	distal	Esophagus	follow up 3	follow up		EoE cohort	3	23 (other parts of eso 32)	active	Omeprazol 2 x 10 mg tgl. p. o., Vedolizumab 200 mg  alle 4 Wochen, Zink 2 x 5 mg tgl. p. o., Vitamin D 1 x 1000 I.E., Cotrimoxazol 2 x 4 ml (bei 80 mg/5 ml TMP-Anteil) tgl. p. o., Salofalk seit Anfang des Jahres nicht mehr verabreicht, Oralpädon 2 x 50 ml tgl. in den abführenden Stomaschenkel	Other	Other	Inhouse_2
+HH02_97-32528	Total RNA	EoE_078	4/22/21	distal	Esophagus	follow up 4	follow up		EoE cohort	1	0 (other parts of eso 25)	active	Omeprazol 2 x 10 mg tgl. p. o., Salofalk-Granustix  1 g 2x tgl. p.o., i.v.: Vedolizumab 200 mg  alle 4 Wochen; p.o.: Zink 2 x 5 mg tgl. p. o., Vitamin D 1 x 1000 I.E. tgl. p.o.	Other	Other	Inhouse_2
+HH02_98-32538	Total RNA	EoE_082	2/8/21	distal	Esophagus	follow up 3	follow up		EoE cohort	6	35	active	Paracetamol und Iberogast bei Bedarf, aktuell keine Einnahme von PPI	Other	Other	Inhouse_2
+HH02_99-32548	Total RNA	EoE_082	4/7/21	proximal	Esophagus	follow up 4	follow up		EoE cohort	2	0	remission	Omeprazol 2x40mg p.o.	Other	Other	Inhouse_2
+SXX7030493_GSM3103956_15-CB2314-114H8	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study3_control	NA	NA	NA	NA	Other	Other	Study3_control
+SXX7030494_GSM3103957_16-CB2391-11508	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study3_control	NA	NA	NA	NA	Other	Other	Study3_control
+SXX7030495_GSM3103958_17-CB2394-11510	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study3_control	NA	NA	NA	NA	Other	Other	Study3_control
+SXX7030496_GSM3103959_18-CB2584-1171A	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study3_control	NA	NA	NA	NA	Other	Other	Study3_control
+SXX7030497_GSM3103960_19_CB2586_11C62	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study3_control	NA	NA	NA	NA	Other	Other	Study3_control
+SXX7030498_GSM3103961_24-CB1142-09T75	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study3_control	NA	NA	NA	NA	Other	Other	Study3_control
+SXX7030499_GSM3103962_11-CB2336-114PL	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study3_control	NA	NA	NA	NA	Other	Other	Study3_control
+SXX7030500_GSM3103963_12-CB2392-1150H	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study3_control	NA	NA	NA	NA	Other	Other	Study3_control
+SXX7030501_GSM3103964_14-CB2506-11826	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study3_control	NA	NA	NA	NA	Other	Other	Study3_control
+SXX7030502_GSM3103965_25-CB1691-1127M	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study3_control	NA	NA	NA	NA	Other	Other	Study3_control
+SXX12492864_GSM4735786_EoE-01_whole_blood_not_EoE_lymphocytic_esophagitis	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study1_control	NA	NA	NA	NA	Other	Other	Study1_control
+SXX12492866_GSM4735788_EoE-06_whole_blood_not_EoE	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study1_control	NA	NA	NA	NA	Other	Other	Study1_control
+SXX12492867_GSM4735789_EoE-13_whole_blood_not_EoE	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study1_control	NA	NA	NA	NA	Other	Other	Study1_control
+SXX12492868_GSM4735790_EoE-07_whole_blood_not_EoE	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study1_control	NA	NA	NA	NA	Other	Other	Study1_control
+SXX12492869_GSM4735791_EoE-10_whole_blood_not_EoE	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study1_control	NA	NA	NA	NA	Other	Other	Study1_control
+SXX12492874_GSM4735796_EoE-01_not_EoE_lymphocytic_esophagitis	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study1_control	NA	NA	NA	NA	Other	Other	Study1_control
+SXX12492876_GSM4735798_EoE-06_not_EoE	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study1_control	NA	NA	NA	NA	Other	Other	Study1_control
+SXX12492877_GSM4735799_EoE-13_not_EoE	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study1_control	NA	NA	NA	NA	Other	Other	Study1_control
+SXX12492878_GSM4735800_EoE-07_not_EoE	NA	NA	NAPPI	NA	Esophagus	NA	NA	NA	Study1_control	NA	NA	NA	NA	Other	Other	Study1_control
+SXX12492879_GSM4735801_EoE-10_not_EoE	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study1_control	NA	NA	NA	NA	Other	Other	Study1_control
+SXX596168_GSM1022684_GEXD-P1	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study2_control	NA	NA	NA	NA	Other	Other	Study2_control
+SXX596169_GSM1022685_GEXD-P2	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study2_control	NA	NA	NA	NA	Other	Other	Study2_control
+SXX596170_GSM1022686_GEXD-P3	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study2_control	NA	NA	NA	NA	Other	Other	Study2_control
+SXX596171_GSM1022687_GEXD-D1	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study2_control	NA	NA	NA	NA	Other	Other	Study2_control
+SXX596172_GSM1022688_GEXD-D2	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study2_control	NA	NA	NA	NA	Other	Other	Study2_control
+SXX596173_GSM1022689_GEXD-D3	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study2_control	NA	NA	NA	NA	Other	Other	Study2_control
+SXX596174_GSM1022690_Control-P1	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study2_control	NA	NA	NA	NA	Other	Other	Study2_control
+SXX596175_GSM1022691_Control-P2	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study2_control	NA	NA	NA	NA	Other	Other	Study2_control
+SXX596176_GSM1022692_Control-P3	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study2_control	NA	NA	NA	NA	Other	Other	Study2_control
+SXX596177_GSM1022693_Control-D1	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study2_control	NA	NA	NA	NA	Other	Other	Study2_control
+SXX596178_GSM1022694_Control-D2	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study2_control	NA	NA	NA	NA	Other	Other	Study2_control
+SXX596179_GSM1022695_Control-D3	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study2_control	NA	NA	NA	NA	Other	Other	Study2_control
+S1657540_GSM1415906_168	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study4_control	NA	NA	NA	NA	Other	Other	Study4_control
+S1657541_GSM1415907_461	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study4_control	NA	NA	NA	NA	Other	Other	Study4_control
+S1657542_GSM1415908_508	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study4_control	NA	NA	NA	NA	Other	Other	Study4_control
+S1657543_GSM1415909_520	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study4_control	NA	NA	NA	NA	Other	Other	Study4_control
+S1657544_GSM1415910_527	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study4_control	NA	NA	NA	NA	Other	Other	Study4_control
+S1657545_GSM1415911_609	NA	NA	NA	NA	Esophagus	NA	NA	NA	Study4_control	NA	NA	NA	NA	Other	Other	Study4_contro
